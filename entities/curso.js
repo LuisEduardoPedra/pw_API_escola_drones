@@ -1,10 +1,10 @@
 class Curso {
-    constructor (codigo, nome, desc, valor, data_cad, carga_horaria, alunos) {
+    constructor (codigo, nome, descricao, valor, data_cadastro, carga_horaria, alunos) {
         this.codigo = codigo;
         this.nome = nome;
-        this.desc = desc;
+        this.descricao = descricao;
         this.valor = valor;
-        this.data_cad = data_cad;
+        this.data_cadastro = data_cadastro;
         this.carga_horaria = carga_horaria;
         this.alunos = alunos;
     }

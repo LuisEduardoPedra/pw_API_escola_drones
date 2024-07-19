@@ -59,19 +59,19 @@ const addCursoDB = async (body) => {
         await client.query('BEGIN');
 
         const cursoResult = await client.query(`
-                                                INSERT INTO cursos (nome, descricao, valor, data_cadastro, carga_horaria) 
-                                                VALUES ($1, $2, $3, $4, $5)
-                                                RETURNING codigo, nome, descricao, valor, to_char(data_cadastro, 'YYYY-MM-DD') as data_cadastro, carga_horaria
-                                                `, [nome, descricao, valor, data_cadastro, carga_horaria]);
+            INSERT INTO cursos (nome, descricao, valor, data_cadastro, carga_horaria) 
+            VALUES ($1, $2, $3, $4, $5)
+            RETURNING codigo, nome, descricao, valor, to_char(data_cadastro, 'YYYY-MM-DD') as data_cadastro, carga_horaria
+        `, [nome, descricao, valor, data_cadastro, carga_horaria]);
 
         const curso = cursoResult.rows[0];
 
         if (alunos && alunos.length > 0) {
             for (let aluno of alunos) {
                 await client.query(`
-                                    INSERT INTO alunos_cursos (aluno_codigo, curso_codigo, curso_nota, frequencia, ativo) 
-                                    VALUES ($1, $2, $3, $4, $5)
-                                    `, [aluno.codigo, curso.codigo, aluno.curso_nota, aluno.frequencia, aluno.ativo]);
+                    INSERT INTO alunos_cursos (aluno_codigo, curso_codigo, curso_nota, frequencia, ativo) 
+                    VALUES ($1, $2, $3, $4, $5)
+                `, [aluno.codigo, curso.codigo, aluno.curso_nota, aluno.frequencia, aluno.ativo]);
             }
         }
 
@@ -81,11 +81,13 @@ const addCursoDB = async (body) => {
 
     } catch (err) {
         await client.query('ROLLBACK');
-        throw "Erro ao inserir o curso: " + err;
+        console.error("Erro ao inserir o curso:", err); // Adiciona mais detalhes ao log
+        throw new Error("Erro ao inserir o curso: " + err.message); // Melhora a mensagem de erro
     } finally {
         client.release();
     }
-}
+};
+
 
 const updateCursoDB = async (body) => {
     const client = await pool.connect();
