@@ -1,16 +1,17 @@
 const { Router } = require('express');
 
 const { getCursos, addCurso, updateCurso, deleteCurso, getCursoPorCodigo } = require('../controllers/cursoController')
+const { verificaJWT } = require('../controllers/segurancaController');
 
 const rotasCursos = new Router();
 
 rotasCursos.route('/curso')
-    .get(getCursos)
-    .post(addCurso)
-    .put(updateCurso);
+    .get(verificaJWT, getCursos)
+    .post(verificaJWT, addCurso)
+    .put(verificaJWT, updateCurso);
 
 rotasCursos.route('/curso/:codigo')
-    .get(getCursoPorCodigo)
-    .delete(deleteCurso);
+    .get(verificaJWT, getCursoPorCodigo)
+    .delete(verificaJWT, deleteCurso);
 
 module.exports = { rotasCursos }
